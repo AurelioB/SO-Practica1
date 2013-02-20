@@ -1,29 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <unistd.h>
 #include <string.h>
 #include "hashtable.h"
 
+char * askUser();
+char * buffer;
 
 int main(int argc, char **argv) {
 	HashTable *table = createHashTable(100);
+	//int exitCalled = 0;
 
+	char *command;
+	while(1) {
+		askUser("sh> ", 100);
+		//strcpy(command, buffer);
+		char *nextWord;
+		nextWord = strtok(buffer," "); // get first token
+		int wordCount = 0;
+		while (nextWord != NULL) {
+			if(strcmp(nextWord, "exit") == 0) {
+				exit(0);
+			} else if(strcmp(nextWord, "shutdown") == 0){
+				exit(123);
+			} else if(strcmp(nextWord, "echo") == 0) {
+				nextWord = strtok(NULL," ");
+				if(nextWord != NULL && nextWord[0] == '$') {
+					memmove(nextWord, nextWord + 1, strlen(nextWord));
+					Var *res = findVar(table, nextWord);
+					if(res == NULL)
+						printf("	ERROR: Variable %s not declared.\n", nextWord);
+					else
+						printf("	%s\n",res->val);
 
-	setVar(table, "TEST1", "VAL1");
-	setVar(table, "TEST1", "VAL");
+				} else {
+					printf("	ERROR: Expected variable query symbol ($).\n");
+				}
+			} else if(strcmp(nextWord, "export") == 0) { 
+				nextWord = strtok(NULL,"=");
+				if(nextWord != NULL) {
+					char *var = strdup(nextWord);
+					nextWord = strtok(NULL, " ");
+					if(nextWord != NULL) {
+						setVar(table, var, nextWord);
+						//printf("	KEY %s, VAL: %s", var, nextWord);
+					} else {
+						printf("	ERROR: Missing value.\n");
+					}
+					
+				} else {
+					printf("	ERROR: Expected variable - value pair.\n");
+				}
+			}
 
-	setVar(table, "abs", "VALfsdf");
+		    wordCount++;
 
-	Var *res = findVar(table, "TEST1");
-	printf("%s    %s  \n", res->key, res->val);
+		    nextWord = strtok(NULL," ");
 
-
-	res = findVar(table, "abs");
-	printf("%s    %s  \n", res->key, res->val);
-
+		}
+	}
 
 
 
 	freeTable(table);
 	return 0;
+}
+
+
+char *askUser(char *question, int length) {
+	char text[length];
+	buffer = (char*) malloc(sizeof(char) * length);
+   	fputs(question, stdout);
+   	fflush(stdout);
+   	if ( fgets(text, sizeof text, stdin) != NULL ) {
+    	char *newline = strchr(text, '\n'); // Search new line
+      	if ( newline != NULL ) {
+        	*newline = '\0';
+      	}
+      	strcpy(buffer, text);
+   	}
+   	return "";
 }
