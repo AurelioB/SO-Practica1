@@ -14,7 +14,7 @@ int main()
   //Declaración de variables
 	int i = 0;															//Contador para la generacion de los 6 procesos
 	int IDprocesos;														//La variable que tendra el ID de los procesos que se van creando
-	char *argv[3];														//Variable de entrada para la funcion execvp
+				//Variable de entrada para la funcion execvp
 	
 	/*
 	 * Ciclo encargado de crear los sub-procesos
@@ -29,10 +29,7 @@ int main()
 		}
 		else if(IDprocesos == 0)										//Si el ID es de un hijo, ejecutar getty (ID == 0)
 		{
-			
-			argv[0] = "getty";
-			argv[1] = "/home/bbqlol/Documentos/Práctica2/src/getty";
-			argv[2] = NULL;
+			char *argv[] = {"xterm", "-e", "./getty", (char *) 0 };
 																		/*
 																		* Explacación algo larga, pero sencilla, para el uso del execvp + xterm -e "nombre del programa" 
 																		* se puede ser dentro de un mismo apuntador, pero debe seguir el siguiente order.
@@ -54,7 +51,7 @@ int main()
 		}
 		*/
 		i++;
-	}while(i < 1);
+	}while(i < 6);
 	
 	return 0;
 }
