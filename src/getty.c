@@ -154,8 +154,8 @@ int creatSH()
 	}
 	else if(pid == 0)
 	{
-		char *argv[] = {"xterm", "-e", "echo 0 > status; ./sh; echo $? > status", (char *) 0 };
-		pid = execvp("xterm", argv);
+		char *argv[] = {"sh", "echo 0 > status; ./sh; echo $? > status", (char *) 0 };
+		pid = execvp("sh", argv);
 	}
 	
 	return pid;
