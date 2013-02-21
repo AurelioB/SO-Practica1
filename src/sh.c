@@ -38,15 +38,15 @@ int main(int argc, char **argv) {
 					printf(" ERROR: Expected variable query symbol ($).\n");
 				}
 			} else if(strcmp(nextWord, "export") == 0) {
-				nextWord = strtok(NULL,"=");
+				nextWord = strtok(NULL," ");
 					if(nextWord != NULL) {
 						char *var = strdup(nextWord);
 							if(nextWord != NULL) {
-								//setVar(table, var, nextWord);
+								setVar(table, var, nextWord);
 								//printf(" KEY %s, VAL: %s", var, nextWord);
-								int pid;
-								char *argv[] = {"xterm", "-e", nextWord, (char *) 0 };
-								pid = execvp("xterm", argv);
+								//int pid;
+								//char *argv[] = {"xterm", "-e", nextWord, (char *) 0 };
+								//pid = execvp("xterm", argv);
 							} else {
 								printf(" ERROR: Missing value.\n");
 							}
@@ -66,15 +66,31 @@ int main(int argc, char **argv) {
 						else {
 							printf("ERROR: Missing variable name\n");
 						}
-						getchar();
 					}else
 					{
-						printf("ERROR: Expecte variable - value pair.\n");
+						printf("ERROR: Expected variable - value pair.\n");
 					}
 				}
+				else if(strcmp(nextWord, "setValue") == 0)
+				{
+					char *var;
+					char *value;
+					nextWord = strtok(NULL, " ");
+					if(nextWord != NULL)
+					{
+						nextWord = strtok(NULL, " ");
+						printf("var = %s, nextWord = %s\n", var, nextWord);
+					}else
+					{
+						printf("ERROR: Expected variable - value pair \n");
+					}
+					
+				}
+				
 				else{
 					printf("Not a recognize command\n");
 				}
+				
 
 				wordCount++;
 
