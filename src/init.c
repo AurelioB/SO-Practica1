@@ -7,26 +7,23 @@ int newTerm();
 
 int main()
 {
-	//Declaración de variables
-	int i = 0;	//Contador para la generacion de los 6 procesos
-	int pid = -1;	//La variable que tendra el ID de los procesos que se van creando
+	
+	int i = 0;	
+	int pid = -1;	
 	int pids[6];
 	int status = -1;
 	int killall = 0;
-	/*
-	* Ciclo encargado de crear los sub-procesos
-	* */
+
 	for(i = 0; i < 6; i++) {
 		pids[i] = newTerm();
-		printf("Process PID%d started\n", pids[i]);
+		printf("Process PID %d started\n", pids[i]);
 	}
 	
 	while (i > 0) {
 		pid = wait(&status);
-		printf("PID %d exited with status %x. %d \n", pid, status, WEXITSTATUS(status));
-
 		status = readStatus("status");
-		
+		printf("PID %d finished execution with status %d\n", pid, status);
+
 		if(status == 0 && !killall) {
   
 			int n;
@@ -40,13 +37,12 @@ int main()
 			++i;
 		} else if(status == 123) {
 			printf("Received shutdown signal from PID: %d\n", pid);
-			//kill(pid);
 			killall = 1;
 			for(i = 0; i < 6; i++) {
 				kill(pids[i], SIGUSR1);
 			}
 		}
-		--i; // TODO(pts): Remove pid from the pids array.
+		--i; 
 	}
 
 	return 0;
@@ -72,7 +68,6 @@ int readStatus (const char* filename)
 	if ( file != NULL ) {
 		char line [ 128 ];
 		if ( fgets ( line, sizeof line, file ) != NULL ) {
-			printf("LINEA %s", line);
 			return (int) strtol(line, (char **)NULL, 10);
 		}
 	}
