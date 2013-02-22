@@ -14,7 +14,7 @@ int replaceVariables();
 int main(int argc, char **argv) {
 	HashTable *table = createHashTable(100);
 	//int exitCalled = 0;
-	//setVar(table, "lala", "1");
+	setVar(table, "PATH", "");
 	//setVar(table, "lele", "2");
 	//setVar(table, "lili", "3");
 	char *command;
@@ -66,7 +66,9 @@ int main(int argc, char **argv) {
 				} else
 					argv[nArgv] = (char *) 0;
 				if(fork() == 0) {
-					execvp(argv[0], argv);
+					Var *res = findVar(table, "PATH");
+					if(execvp(argv[0], argv) == -1)
+							execvp(strcat(res->val,argv[0]), argv);
 				} else if(!inBackground) {
             		int pid, status;
             		
